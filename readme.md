@@ -2,7 +2,11 @@
 
 This project is built using Strapi as the backend, and Gatsby as the frontend. This repository contains both technologies so it will be a monorepo. 
 
-## Running the project
+## Instructions for Running the Project
+Backend: `npm run --prefix backend develop`
+Frontend: `npm run --prefix frontend develop`
+
+## Default Instructions for Running the Project
 
 Available commands:
 
