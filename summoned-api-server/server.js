@@ -22,23 +22,6 @@ app.get('/summoner-info/:summonerName', async (req, res) => {
 });
 
 
-app.get('/recent-games/:summonerName', async (req, res) => {
-    const summonerName = req.params.summonerName;
-    try {
-        const summonerResponse = await fetch(`https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(summonerName)}?api_key=${API_KEY}`);
-        const summonerData = await summonerResponse.json();
-        const accountId = summonerData.accountId;
-        
-        const matchlistResponse = await fetch(`https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/${accountId}?endIndex=10&api_key=${API_KEY}`);
-        const matchlistData = await matchlistResponse.json();
-
-        res.json(matchlistData);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        res.status(500).json({ error: 'Error fetching recent games.' });
-    }
-});
-
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

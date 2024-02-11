@@ -19,10 +19,11 @@ async function fetchSummonerInfo() {
     summonerInfoDiv.innerHTML = ''; // Clear previous content
 
     try {
-        const response = await fetch(`${serverURL}/summoner-info/${encodeURIComponent(summonerName)}`);
-        const summonerInfo = await response.json();
+        const summonerInfoResponse = await fetch(`${serverURL}/summoner-info/${encodeURIComponent(summonerName)}`);
+        const summonerInfo = await summonerInfoResponse.json();
 
         if (summonerInfo) {
+            // Display summoner basic info
             const summonerInfoHTML = `
                 <div class="summoner">
                     <div><strong>Summoner Name:</strong> ${summonerInfo.name}</div>
