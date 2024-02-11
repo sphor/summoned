@@ -3,15 +3,10 @@
 This project is built using Strapi as the backend, and Gatsby as the frontend. This repository contains both technologies so it will be a monorepo. 
 
 ## Instantiation
-Strapi API token was created (via backend) and stored in .env.development before frontend was run initially.\
-.env.development must be created with this API token. 
+Create .env file and store League of Legends API key
 
-## Running the Project Locally
-Backend: `npm run --prefix backend develop`\
-Runs on http://localhost:1337/admin
+## Express Server
+Start express server:\
+`node server.js`
 
-Frontend: `npm run --prefix frontend develop`\
-Runs on http://localhost:8000/
-
-## Deployment
-https://github.com/strapi/starters-and-templates/tree/main/packages/starters/gatsby-blog
+Your Express server should now be running and listening for requests on http://localhost:3000. You can now make requests to your server to retrieve the last game played using the League of Legends API. Make sure to handle CORS (Cross-Origin Resource Sharing) if your frontend is hosted on a different domain.
