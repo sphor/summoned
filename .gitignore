@@ -1,3 +1,2 @@
 node_modules
-.env.development
-summoned\frontend\.env.development
+process.env.LOL_API_KEY
