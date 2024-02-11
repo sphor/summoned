@@ -1,41 +1,44 @@
 // server.js
 const express = require('express');
 const fetch = require('node-fetch');
-require('dotenv').config();
+const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
+const API_KEY = require('./config');
 
-app.use(express.json());
+app.use(cors());
 
-app.post('/lastGame', async (req, res) => {
-    const { summonerName } = req.body;
-    const apiKey = process.env.LOL_API_KEY;
-
+app.get('/summoner-info/:summonerName', async (req, res) => {
+    const summonerName = req.params.summonerName;
     try {
-        const summonerResponse = await fetch(`https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}?api_key=${apiKey}`);
-        const summonerData = await summonerResponse.json();
-        const summonerId = summonerData.id;
-
-        const matchHistoryResponse = await fetch(`https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/${summonerId}?api_key=${apiKey}`);
-        const matchHistoryData = await matchHistoryResponse.json();
-        const matches = matchHistoryData.matches;
-
-        const lastMatchId = matches[0].gameId;
-
-        const matchDetailsResponse = await fetch(`https://na1.api.riotgames.com/lol/match/v4/matches/${lastMatchId}?api_key=${apiKey}`);
-        const matchDetailsData = await matchDetailsResponse.json();
-
-        res.json({
-            gameMode: matchDetailsData.gameMode,
-            queueType: matchDetailsData.queueType
-        });
+        const response = await fetch(`https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(summonerName)}?api_key=${API_KEY}`);
+        const summonerInfo = await response.json();
+        res.json(summonerInfo);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error fetching summoner info:', error);
+        res.status(500).json({ error: 'Error fetching summoner info.' });
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+
+app.get('/recent-games/:summonerName', async (req, res) => {
+    const summonerName = req.params.summonerName;
+    try {
+        const summonerResponse = await fetch(`https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encodeURIComponent(summonerName)}?api_key=${API_KEY}`);
+        const summonerData = await summonerResponse.json();
+        const accountId = summonerData.accountId;
+        
+        const matchlistResponse = await fetch(`https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/${accountId}?endIndex=10&api_key=${API_KEY}`);
+        const matchlistData = await matchlistResponse.json();
+
+        res.json(matchlistData);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).json({ error: 'Error fetching recent games.' });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });

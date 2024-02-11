@@ -3,13 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>League of Legends Last Game Played</title>
+    <title>Summoned</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Find Last Game Played</h1>
-    <input type="text" id="summonerName" placeholder="Enter Summoner Name">
-    <button onclick="getLastGame()">Get Last Game</button>
-    <div id="lastGame"></div>
+    <div class="container">
+        <h1>Summoned</h1>
+        <label>
+            <input type="text" id="summonerName" placeholder="Enter Summoner Name">
+        </label>
+        <button onclick="fetchSummonerInfo()">Get Summoner Info</button>
+        <div id="summonerInfo"></div>
+    </div>
 
     <script src="js/scripts.js"></script>
 </body>

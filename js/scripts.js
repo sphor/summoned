@@ -1,34 +1,44 @@
-async function getLastGame() {
-    const summonerName = document.getElementById('summonerName').value;
-    const apiKey = process.env.LOL_API_KEY; // Accessing the API key from environment variable
+const serverURL = 'http://localhost:3000'; // Change this to your actual server URL if it's hosted elsewhere
 
-    if (!apiKey) {
-        console.error('API key not provided. Please set the LOL_API_KEY environment variable.');
-        return;
+// script.js
+fetch('summoned-api-server/config.js')
+  .then(response => response.text())
+  .then(data => {
+    // Use regular expressions or parsing logic to extract the API key
+    const riotApiKey = /const riotApiKey = '(.*?)';/.exec(data)[1];
+    // Now you can use the API key in your code
+    console.log(riotApiKey); // Outputs: YOUR_RIOT_API_KEY
+    // You can proceed with your logic here, such as fetching summoner data
+  })
+  .catch(error => console.error('Error loading config:', error));
+
+
+async function fetchSummonerInfo() {
+    const summonerName = document.getElementById('summonerName').value.trim();
+    const summonerInfoDiv = document.getElementById('summonerInfo');
+    summonerInfoDiv.innerHTML = ''; // Clear previous content
+
+    try {
+        const response = await fetch(`${serverURL}/summoner-info/${encodeURIComponent(summonerName)}`);
+        const summonerInfo = await response.json();
+
+        if (summonerInfo) {
+            const summonerInfoHTML = `
+                <div class="summoner">
+                    <div><strong>Summoner Name:</strong> ${summonerInfo.name}</div>
+                    <div><strong>Level:</strong> ${summonerInfo.summonerLevel}</div>
+                    <div><strong>Profile Icon ID:</strong> ${summonerInfo.profileIconId}</div>
+                    <div><strong>Account ID:</strong> ${summonerInfo.accountId}</div>
+                    <div><strong>Summoner ID:</strong> ${summonerInfo.id}</div>
+                    <div><strong>PUUID:</strong> ${summonerInfo.puuid}</div>
+                </div>
+            `;
+            summonerInfoDiv.innerHTML = summonerInfoHTML;
+        } else {
+            summonerInfoDiv.textContent = 'Summoner not found.';
+        }
+    } catch (error) {
+        console.error('Error fetching summoner info:', error);
+        summonerInfoDiv.textContent = 'Error fetching summoner info. Please try again later.';
     }
-
-    // Fetch summoner ID
-    const summonerResponse = await fetch(`https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}?api_key=${apiKey}`);
-    const summonerData = await summonerResponse.json();
-    const summonerId = summonerData.id;
-
-    // Fetch match history
-    const matchHistoryResponse = await fetch(`https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/${summonerId}?api_key=${apiKey}`);
-    const matchHistoryData = await matchHistoryResponse.json();
-    const matches = matchHistoryData.matches;
-
-    // Get the ID of the last match played
-    const lastMatchId = matches[0].gameId;
-
-    // Fetch match details
-    const matchDetailsResponse = await fetch(`https://na1.api.riotgames.com/lol/match/v4/matches/${lastMatchId}?api_key=${apiKey}`);
-    const matchDetailsData = await matchDetailsResponse.json();
-
-    // Display the last game played
-    const lastGameDiv = document.getElementById('lastGame');
-    lastGameDiv.innerHTML = `
-        <h2>Last Game Played:</h2>
-        <p>Game Mode: ${matchDetailsData.gameMode}</p>
-        <p>Game Type: ${matchDetailsData.queueType}</p>
-    `;
 }
