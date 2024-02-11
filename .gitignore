@@ -1,2 +1,2 @@
 node_modules
-process.env.LOL_API_KEY
+.env
