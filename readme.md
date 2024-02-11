@@ -17,6 +17,9 @@ Start express server from within the \summoned-api-server folder:\
 Note: Any changes made to the server.js file require a stop/start cycle on the server.
 
 ## Frontend
-Open index.html in your browser
+From the project root, run:\
+`http-server`
+
+You should now be able to access the frontend in your browser via http://127.0.0.1:8080
 
 Your Express server should now be running and listening for requests on http://localhost:3000. You can now make requests to your server to retrieve the last game played using the League of Legends API. Make sure to handle CORS (Cross-Origin Resource Sharing) if your frontend is hosted on a different domain.
